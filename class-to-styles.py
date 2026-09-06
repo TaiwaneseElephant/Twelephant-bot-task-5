@@ -50,7 +50,7 @@ def ChangeClass(element, addclasses:set = None, removeclasses:set = None, classe
     if classes is None:
         classtext = re.search(r'''class\s*=\s*["']([\w\d\- ]+?)["']''', element)
         if classtext is None:
-            classes = {}
+            classes = set()
         else:
             classes = set(classtext.group(1).split())
     if removeclasses is not None:
