@@ -38,7 +38,7 @@ def ClassToStyles(element, table):
     if stylestext is None:
         styles = {}
     else:
-        styles = {style[0].strip() : style[1].strip() for style in (style.split(":", 1) for style in stylestext.group(1).split(";"))}
+        styles = {style[0].strip() : style[1].strip() for style in (style.split(":", 1) for style in stylestext.group(1).split(";")  if ":" in style)}
     classes = set(classtext.group(1).split())
     targetclasses = set(table.keys())
     for classname in (classes & targetclasses):
