@@ -63,11 +63,11 @@ def ChangeClass(element, addclasses:set, removeclasses:set, classes:set = None):
 
 def ChangeStyles(element:str = "", addstyles:dict = None, removestyles:iter = None, styles:dict = None, replace:bool = True, returnval:str= "element"):
     if styles is None:
-        stylestext = re.search(r'''styles\s*=\s*["']([^"'=>\n]+?)["']''', element)
+        stylestext = re.search(r'''style\s*=\s*["']([^"'=>\n]+?)["']''', element)
         if stylestext is None:
             styles = {}
         else:
-            styles = {style[0].strip() : style[1].strip() for style in (style.split(":", 1) for style in stylestext.group(1).split(";"))}
+            styles = {style[0].strip() : style[1].strip() for style in (style.split(":", 1) for style in stylestext.group(1).split(";") if ":" in style)}
     if removestyles is not None:
         for style in removestyles:
             if style in styles.keys():
