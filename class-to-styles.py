@@ -7,16 +7,17 @@ def ClassToStyles(element, table):
     stylestext = re.search(r'style\s*=\s"([^"=]+?)"', element)
     if sylestext is None:
         return
-    classes = classtext.group(1).split()
+    classes = set(classtext.group(1).split())
     styles = {style[0].strip() : style[1].strip() for style in \
     (style.split(":", 1) for style in stylestext.group(1).split(";"))}
-    for classname, stylestable in table.items():
-        if classname in classes:
-            for key, value in stylestable:
-                if styles.has_key(key):
-                    continue
-                styles[key] = value
-            classes.remove(classname)
+    targetclassea = set(table.keys())
+    for classname in (classes & targetclasses):
+        stylestable = table[classname]
+        for key, value in stylestable:
+            if styles.has_key(key):
+                continue
+            styles[key] = value
+    classes = classes - targetclasses
     newclasstext = " ".join(classes)
     newstylestext = "; ".join(style)
     return ChangeClass(ChangeStyles(element, newstylestext), newclasstext)
