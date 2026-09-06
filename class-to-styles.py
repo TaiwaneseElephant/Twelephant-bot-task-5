@@ -55,7 +55,7 @@ def main():
     except:
         print("Failed to load config.")
         return
-    for page in pagegenerators.SearchPageGenerator("insource:/class\s*=\s*\"([\w\d\- ]* )?(messagebox|notice)[ \"]/", namespaces=0, site=site, content=True):
+    for page in pagegenerators.SearchPageGenerator(query, site=site, content=True):
         newcontent = page.text
         for element in re.findall(r"<(?:div|p|span) [^>\n]+>", page.text):
             newcontent = ClassToStyles(newcontent, table)
