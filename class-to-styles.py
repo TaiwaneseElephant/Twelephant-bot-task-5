@@ -44,7 +44,7 @@ def ClassToStyles(element, table):
     for classname in (classes & targetclasses):
         stylestable = table[classname]
         styles = ChangeStyles(addstyles = stylestable, styles = styles, replace = False, returnval = "table")
-    return ChangeClass(ChangeStyles(element, styles, styles = styles, replace = False, returnval = "element"), targetclasses, classes = classes)
+    return ChangeClass(ChangeStyles(element, styles, styles = styles, replace = False, returnval = "element"), removeclasses = targetclasses, classes = classes)
 
 def ChangeClass(element, addclasses:set, removeclasses:set, classes:set = None):
     if classes is None:
@@ -55,9 +55,12 @@ def ChangeClass(element, addclasses:set, removeclasses:set, classes:set = None):
             classes = set(classtext.group(1).split())
     classes = classes - removeclasses
     classes.update(addclasses)
-    newclasstext = f'class="{" ".join(classes)}"'
+    if len(classes) > 0:
+        newclasstext = f'class="{" ".join(classes)}"'
+    else:
+        newclasstext = ""
     element, num = re.subn(r'''class\s*=\s*["'][\w\d\- ]+?["']''', newclasstext, element)
-    if num == 0:
+    if num == 0 and len(classes) > 0:
         element += f" {newclasstext}"
     return element
 
@@ -78,9 +81,12 @@ def ChangeStyles(element:str = "", addstyles:dict = None, removestyles:iter = No
                 continue
             styles[key] = value
     if returnval == "element":
-        newstylestext = f'style="{"; ".join([f"{key}:{value}" for key, value in styles.items()])}"'
+        if len(styles) > 0:
+            newstylestext = f'style="{"; ".join([f"{key}:{value}" for key, value in styles.items()])}"'
+        else:
+            newstylestext = ""
         element, num = re.subn(r'''style\s*=\s*["'][^"'=>\n]+?["']''', newstylestext, element)
-        if num == 0:
+        if num == 0 and len(styles) > 0:
             element += f" {newstylestext}"
         return element
     elif returnval == "table":
