@@ -46,15 +46,17 @@ def ClassToStyles(element, table):
         styles = ChangeStyles(addstyles = stylestable, styles = styles, replace = False, returnval = "table")
     return ChangeClass(ChangeStyles(element, styles, styles = styles, replace = False, returnval = "element"), removeclasses = targetclasses, classes = classes)
 
-def ChangeClass(element, addclasses:set, removeclasses:set, classes:set = None):
+def ChangeClass(element, addclasses:set = None, removeclasses:set = None, classes:set = None):
     if classes is None:
         classtext = re.search(r'''class\s*=\s*["']([\w\d\- ]+?)["']''', element)
         if classtext is None:
             classes = {}
         else:
             classes = set(classtext.group(1).split())
-    classes = classes - removeclasses
-    classes.update(addclasses)
+    if removeclasses is not None:
+        classes = classes - removeclasses
+    if addclasses is not None:
+        classes.update(addclasses)
     if len(classes) > 0:
         newclasstext = f'class="{" ".join(classes)}"'
     else:
