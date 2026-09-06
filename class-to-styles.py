@@ -17,12 +17,12 @@ def ClassToStyles(element, table):
 
 def ChangeClass(element, addclasses:set, removeclasses:set, classes:set = None):
     if classes is None:
-        classtext = re.search(r'class\s*=\s"([\w\d- ]+?)"', element)
+        classtext = re.search(r'class\s*=\s"([\w\d\- ]+?)"', element)
         if classtext is None:
             return
     classes = set(classtext.group(1).split()) - removeclasses
     classes.update(addclasses)
-    return re.sub(r'(?<=class\s*=\s*")[\w\d- ]+?(?=")', " ".join(classes), element)
+    return re.sub(r'class\s*=\s*"[\w\d\- ]+?"', f'class="{" ".join(classes)}"', element)
 
 def ChangeStyles(element, addstyles:dict = {}, removestyles:iter = [], styles:dict = None, replace:bool = True, returnval:str= "element"):
     if styles is None:
@@ -38,7 +38,7 @@ def ChangeStyles(element, addstyles:dict = {}, removestyles:iter = [], styles:di
             continue
         styles[key] = value
     if returnval == "element":
-        return re.sub(r'(?<=style\s*=\s*")[^"=>\n]+?(?=")', "; ".join(styles), element)
+        return re.sub(r'style\s*=\s*"[^"=>\n]+?"', f'style="{"; ".join(styles)}"', element)
     elif returnval == "table":
         return styles
     else:
