@@ -43,3 +43,19 @@ def ChangeStyles(element, addstyles:dict = {}, removestyles:iter = [], styles:di
         return styles
     else:
         raise ValueError(f"Unexpected value for 'returnval': {returnval}")
+
+def main():
+    site = pywikibot.Site("wikipedia:zh")
+    try:
+        config = pywikibot.Page(site, "User:Twelephant-bot/task/5/config.json")
+        if not config["Enable"]:
+            return
+        table = config["table"]
+        query = config["query"]
+    except:
+        print("Failed to load config.")
+        return
+    for page in pagegenerators.SearchPageGenerator("insource:/class\s*=\s*\"([\w\d\- ]* )?(messagebox|notice)[ \"]/", namespaces=0, site=site, content=True):
+        newcontent = page.text
+        for element in re.findall(r"<(?:div|p|span) [^>\n]+>", page.text):
+            newcontent = ClassToStyles(newcontent, table)
