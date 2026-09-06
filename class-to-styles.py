@@ -58,12 +58,12 @@ def ChangeClass(element, addclasses:set = None, removeclasses:set = None, classe
     if addclasses is not None:
         classes.update(addclasses)
     if len(classes) > 0:
-        newclasstext = f'class="{" ".join(classes)}"'
+        newclasstext = f' class="{" ".join(classes)}"'
     else:
         newclasstext = ""
-    element, num = re.subn(r'''class\s*=\s*["'][\w\d\- ]+?["']''', newclasstext, element)
+    element, num = re.subn(r''' +class\s*=\s*["'][\w\d\- ]+?["']''', newclasstext, element)
     if num == 0 and len(classes) > 0:
-        element += f" {newclasstext}"
+        element += newclasstext
     return element
 
 def ChangeStyles(element:str = "", addstyles:dict = None, removestyles:iter = None, styles:dict = None, replace:bool = True, returnval:str= "element"):
@@ -84,12 +84,12 @@ def ChangeStyles(element:str = "", addstyles:dict = None, removestyles:iter = No
             styles[key] = value
     if returnval == "element":
         if len(styles) > 0:
-            newstylestext = f'style="{"; ".join([f"{key}:{value}" for key, value in styles.items()])}"'
+            newstylestext = f' style="{"; ".join([f"{key}:{value}" for key, value in styles.items()])}"'
         else:
             newstylestext = ""
-        element, num = re.subn(r'''style\s*=\s*["'][^"'=>\n]+?["']''', newstylestext, element)
+        element, num = re.subn(r''' +style\s*=\s*["'][^"'=>\n]+?["']''', newstylestext, element)
         if num == 0 and len(styles) > 0:
-            element += f" {newstylestext}"
+            element += newstylestext
         return element
     elif returnval == "table":
         return styles
