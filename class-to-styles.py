@@ -12,10 +12,10 @@ def save(site, page, func = lambda x:x, summary:str = "", max_retry_times:int = 
             page.text = func(oringinal_text, **kargs)
             page.save(summary, minor = True, bot=True)
             return True
-        except pwb.exceptions.EditConflictError as e:
+        except pywikibot.exceptions.EditConflictError as e:
             print(f"Warning! There is an edit conflict on page '{page.title()}'!", flush=True)
             oringinal_text = page.get(force = True, get_redirect = False)
-        except pwb.exceptions.LockedPageError as e:
+        except pywikibot.exceptions.LockedPageError as e:
             print(f"Warning! The edit attempt on page '{page.title()}' was disallowed because the page is protected!", flush=True)
             break
         except pwb.exceptions.AbuseFilterDisallowedError as e:
@@ -24,7 +24,7 @@ def save(site, page, func = lambda x:x, summary:str = "", max_retry_times:int = 
         except pwb.exceptions.SpamblacklistError as e:
             print(f"Warning! The edit attempt on page '{page.title()}' was disallowed by the SpamFilter because the edit add blacklisted URL!", flush=True)
             break
-        except pwb.exceptions.TitleblacklistError as e:
+        except pywikibot.exceptions.TitleblacklistError as e:
             print(f"Warning! The edit attempt on page '{page.title()}' was disallowed because the title is blacklisted!", flush=True)
             break
     print(f"The attempt to edit the page '{page.title()}' was stopped because of the error below:\n{e}.", flush=True)
