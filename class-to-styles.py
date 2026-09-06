@@ -44,7 +44,7 @@ def ClassToStyles(element, table):
     for classname in (classes & targetclasses):
         stylestable = table[classname]
         styles = ChangeStyles(addstyles = stylestable, styles = styles, replace = False, returnval = "table")
-    return ChangeClass(ChangeStyles(element, styles, styles = styles, replace = False, returnval = "element"), removeclasses = targetclasses, classes = classes)
+    return ChangeClass(ChangeStyles(element, styles = styles, replace = False, returnval = "element"), removeclasses = targetclasses, classes = classes)
 
 def ChangeClass(element, addclasses:set = None, removeclasses:set = None, classes:set = None):
     if classes is None:
