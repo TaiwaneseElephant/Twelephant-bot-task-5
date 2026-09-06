@@ -68,10 +68,10 @@ def ChangeStyles(element, addstyles:dict = {}, removestyles:iter = [], styles:di
         else:
             styles = {style[0].strip() : style[1].strip() for style in (style.split(":", 1) for style in stylestext.group(1).split(";"))}
     for style in removestyles:
-        if styles.has_key(key):
+        if key in styles.keys():
             del styles[style]
     for key, value in addstyles:
-        if not replace or styles.has_key(key):
+        if not replace or (key in styles.keys()):
             continue
         styles[key] = value
     if returnval == "element":
