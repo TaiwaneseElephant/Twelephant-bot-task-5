@@ -55,9 +55,10 @@ def ChangeClass(element, addclasses:set, removeclasses:set, classes:set = None):
             classes = set(classtext.group(1).split())
     classes = classes - removeclasses
     classes.update(addclasses)
-    element, num = re.subn(r'class\s*=\s*"[\w\d\- ]+?"', f'class="{" ".join(classes)}"', element)
+    newclasstext = f'class="{" ".join(classes)}"'
+    element, num = re.subn(r'class\s*=\s*"[\w\d\- ]+?"', newclasstext, element)
     if num == 0:
-        element += f' class="{" ".join(classes)}"'
+        element += f" {newclasstext}"
     return element
 
 def ChangeStyles(element, addstyles:dict = {}, removestyles:iter = [], styles:dict = None, replace:bool = True, returnval:str= "element"):
@@ -75,9 +76,10 @@ def ChangeStyles(element, addstyles:dict = {}, removestyles:iter = [], styles:di
             continue
         styles[key] = value
     if returnval == "element":
-        element, num = re.subn(r'style\s*=\s*"[^"=>\n]+?"', f'style="{"; ".join([f"{style[0]}:{style[1]}" for style in styles])}"', element)
+        newstylestext = f'style="{"; ".join([f"{style[0]}:{style[1]}" for style in styles])}"'
+        element, num = re.subn(r'style\s*=\s*"[^"=>\n]+?"', newstylestext, element)
         if num == 0:
-            element += f' style="{"; ".join(styles)}"'
+            element += f {newstylestext}"
         return element
     elif returnval == "table":
         return styles
@@ -87,9 +89,9 @@ def ChangeStyles(element, addstyles:dict = {}, removestyles:iter = [], styles:di
 def pageprocess(text:str, table:dict):
     newcontent = text
     for match in re.finditer(r"<(div|p|span) ([^>\n]+)>", text):
-        newcontent = newcontent.replace(match.group(), f"<{match.group(1)} {ClassToStyles(match.group(2), table)}>")
+        newcontent = newcontent.replace(match.group(), f"<{match.group(1)} {ClassToStyles(match.group(2).strip(), table)}>")
     for match in re.finditer(r"(?:^|\n)\s*{| (.*=.*)", text):
-        newcontent = newcontent.replace(match.group(), f"{| {ClassToStyles(match.group(1), table)}")
+        newcontent = newcontent.replace(match.group(), f"{| {ClassToStyles(match.group(1).strip(), table)}")
     return newcontent
 
 def main():
