@@ -48,7 +48,7 @@ def ClassToStyles(element, table):
 
 def ChangeClass(element, addclasses:set, removeclasses:set, classes:set = None):
     if classes is None:
-        classtext = re.search(r'''class\s*=\s["']([\w\d\- ]+?)["']''', element)
+        classtext = re.search(r'''class\s*=\s*["']([\w\d\- ]+?)["']''', element)
         if classtext is None:
             classes = {}
         else:
@@ -63,7 +63,7 @@ def ChangeClass(element, addclasses:set, removeclasses:set, classes:set = None):
 
 def ChangeStyles(element:str = "", addstyles:dict = {}, removestyles:iter = [], styles:dict = None, replace:bool = True, returnval:str= "element"):
     if styles is None:
-        stylestext = re.search(r'styles\s*=\s"([^"'=>\n]+?)"', element)
+        stylestext = re.search(r'''styles\s*=\s*["']([^"'=>\n]+?)["']''', element)
         if stylestext is None:
             styles = {}
         else:
