@@ -99,9 +99,9 @@ def ChangeStyles(element:str = "", addstyles:dict = None, removestyles:iter = No
 def pageprocess(text:str, table:dict):
     newcontent = text
     for match in re.finditer(r"<(div|p|span) ([^>\n]+)>", text):
-        newcontent = newcontent.replace(match.group(), f"<{match.group(1)} {ClassToStyles(match.group(2).strip(), table)}>")
+        newcontent = newcontent.replace(match.group(), f"<{match.group(1)} {ClassToStyles(match.group(2).strip(), table)}>", 1)
     for match in re.finditer(r"(?:^|\n)\s*\{\| (.*=.*)", text):
-        newcontent = newcontent.replace(match.group(), f"{| *{ClassToStyles(match.group(1).strip(), table)}")
+        newcontent = newcontent.replace(match.group(), f"{| *{ClassToStyles(match.group(1).strip(), table)}", 1)
     return newcontent
 
 def main():
