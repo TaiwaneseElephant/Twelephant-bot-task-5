@@ -18,10 +18,10 @@ def save(site, page, func = lambda x:x, summary:str = "", max_retry_times:int = 
         except pywikibot.exceptions.LockedPageError as e:
             print(f"Warning! The edit attempt on page '{page.title()}' was disallowed because the page is protected!", flush=True)
             break
-        except pwb.exceptions.AbuseFilterDisallowedError as e:
+        except pywikibot.exceptions.AbuseFilterDisallowedError as e:
             print(f"Warning! The edit attempt on page '{page.title()}' was disallowed by the AbuseFilter!", flush=True)
             break
-        except pwb.exceptions.SpamblacklistError as e:
+        except pywikibot.exceptions.SpamblacklistError as e:
             print(f"Warning! The edit attempt on page '{page.title()}' was disallowed by the SpamFilter because the edit add blacklisted URL!", flush=True)
             break
         except pywikibot.exceptions.TitleblacklistError as e:
