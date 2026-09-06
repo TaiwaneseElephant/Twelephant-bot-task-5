@@ -1,4 +1,34 @@
 import re, json, pywikibot
+from pywikibot import textlib
+
+def save(site, page, func = lambda x:x, summary:str = "", max_retry_times:int = 3, **kargs) -> bool:
+    e = None
+    if page.exists():
+        oringinal_text = page.get(force = True, get_redirect = False)
+    else:
+      return False
+    for _ in range(max_retry_times):
+        try:
+            page.text = func(oringinal_text, **kargs)
+            page.save(summary, minor = True, bot=True)
+            return True
+        except pwb.exceptions.EditConflictError as e:
+            print(f"Warning! There is an edit conflict on page '{page.title()}'!", flush=True)
+            oringinal_text = page.get(force = True, get_redirect = False)
+        except pwb.exceptions.LockedPageError as e:
+            print(f"Warning! The edit attempt on page '{page.title()}' was disallowed because the page is protected!", flush=True)
+            break
+        except pwb.exceptions.AbuseFilterDisallowedError as e:
+            print(f"Warning! The edit attempt on page '{page.title()}' was disallowed by the AbuseFilter!", flush=True)
+            break
+        except pwb.exceptions.SpamblacklistError as e:
+            print(f"Warning! The edit attempt on page '{page.title()}' was disallowed by the SpamFilter because the edit add blacklisted URL!", flush=True)
+            break
+        except pwb.exceptions.TitleblacklistError as e:
+            print(f"Warning! The edit attempt on page '{page.title()}' was disallowed because the title is blacklisted!", flush=True)
+            break
+    print(f"The attempt to edit the page '{page.title()}' was stopped because of the error below:\n{e}.", flush=True)
+    return False
 
 def ClassToStyles(element, table):
     classtext = re.search(r'class\s*=\s"([\w\d- ]+?)"', element)
@@ -54,21 +84,25 @@ def ChangeStyles(element, addstyles:dict = {}, removestyles:iter = [], styles:di
     else:
         raise ValueError(f"Unexpected value for 'returnval': {returnval}")
 
+def pageprocess(text:str, table:dict):
+    newcontent = text
+    for match in re.finditer(r"<(div|p|span) ([^>\n]+)>", text):
+        newcontent = newcontent.replace(match.group(), f"<{match.group(1)} {ClassToStyles(match.group(2), table)}>")
+    for match in re.finditer(r"(?:^|\n)\s*{| (.*=.*)", text):
+        newcontent = newcontent.replace(match.group(), f"{| {ClassToStyles(match.group(1), table)}")
+    return newcontent
+
 def main():
     site = pywikibot.Site("wikipedia:zh")
     try:
-        config = pywikibot.Page(site, "User:Twelephant-bot/task/5/config.json")
+        config = json.loads(pywikibot.Page(site, "User:Twelephant-bot/task/5/config.json"))
         if not config["Enable"]:
             return
         table = config["table"]
         query = config["query"]
+        summary = config["summary"]
     except:
         print("Failed to load config.")
         return
     for page in pagegenerators.SearchPageGenerator(query, site=site, content=True):
-        newcontent = page.text
-        for match in re.finditer(r"<(div|p|span) ([^>\n]+)>", page.text):
-            newcontent = newcontent.replace(match.group(), f"<{match.group(1)} {ClassToStyles(match.group(2), table)}>")
-        for match in re.finditer(r"(?:^|\n)\s*{| (.*=.*)", page.text):
-            newcontent = newcontent.replace(match.group(), f"{| {ClassToStyles(match.group(1), table)}")
-        page.text = newcontent
+        save(site, page, pageprocess, summary, table = table)
