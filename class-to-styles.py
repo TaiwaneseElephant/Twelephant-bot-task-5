@@ -8,7 +8,8 @@ def ClassToStyles(element, table):
     if sylestext is None:
         return
     classes = classtext.group(1).split()
-    styles = {style[0].strip() : style[1].strip() for style in (style.split(":", 1) for style in stylestext.group(1).split(";"))}
+    styles = {style[0].strip() : style[1].strip() for style in \
+    (style.split(":", 1) for style in stylestext.group(1).split(";"))}
     for classname, stylestable in table.items():
         if classname in classes:
             for key, value in stylestable:
@@ -18,7 +19,7 @@ def ClassToStyles(element, table):
             classes.remove(classname)
     newclasstext = " ".join(classes)
     newstylestext = "; ".join(style)
-    return ChangeClass(ChangeStyles(element, newstylestext),newclasstext)
+    return ChangeClass(ChangeStyles(element, newstylestext), newclasstext)
 
 def ChangeClass(element, classtext):
     return re.sub(r'(?<=class)\s*=\s*"[^"=]+?"', classtext, element)
