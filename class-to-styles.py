@@ -1,5 +1,5 @@
 import re, json, pywikibot
-from pywikibot import textlib
+from pywikibot import textlib, pagegenerators
 
 def save(site, page, func = lambda x:x, summary:str = "", max_retry_times:int = 3, **kargs) -> bool:
     e = None
@@ -31,11 +31,11 @@ def save(site, page, func = lambda x:x, summary:str = "", max_retry_times:int = 
     return False
 
 def ClassToStyles(element, table):
-    classtext = re.search(r'class\s*=\s"([\w\d- ]+?)"', element)
+    classtext = re.search(r'''class\s*=\s["']([\w\d- ]+?)["']''', element)
     if classtext is None:
         return element
-    stylestext = re.search(r'style\s*=\s"([^"=]+?)"', element)
-    if sylestext is None:
+    stylestext = re.search(r'''style\s*=\s["']([^"'=>\n]+?)["']''', element)
+    if stylestext is None:
         styles = {}
     else:
         styles = {style[0].strip() : style[1].strip() for style in (style.split(":", 1) for style in stylestext.group(1).split(";"))}
@@ -48,7 +48,7 @@ def ClassToStyles(element, table):
 
 def ChangeClass(element, addclasses:set, removeclasses:set, classes:set = None):
     if classes is None:
-        classtext = re.search(r'class\s*=\s"([\w\d\- ]+?)"', element)
+        classtext = re.search(r'''class\s*=\s["']([\w\d\- ]+?)["']''', element)
         if classtext is None:
             classes = {}
         else:
@@ -56,30 +56,30 @@ def ChangeClass(element, addclasses:set, removeclasses:set, classes:set = None):
     classes = classes - removeclasses
     classes.update(addclasses)
     newclasstext = f'class="{" ".join(classes)}"'
-    element, num = re.subn(r'class\s*=\s*"[\w\d\- ]+?"', newclasstext, element)
+    element, num = re.subn(r''''class\s*=\s*["'][\w\d\- ]+?["']''', newclasstext, element)
     if num == 0:
         element += f" {newclasstext}"
     return element
 
 def ChangeStyles(element, addstyles:dict = {}, removestyles:iter = [], styles:dict = None, replace:bool = True, returnval:str= "element"):
     if styles is None:
-        stylestext = re.search(r'styles\s*=\s"([^"=>\n]+?)"', element)
+        stylestext = re.search(r'styles\s*=\s"([^"'=>\n]+?)"', element)
         if stylestext is None:
             styles = {}
         else:
             styles = {style[0].strip() : style[1].strip() for style in (style.split(":", 1) for style in stylestext.group(1).split(";"))}
     for style in removestyles:
-        if key in styles.keys():
+        if style in styles.keys():
             del styles[style]
-    for key, value in addstyles:
+    for key, value in addstyles.items():
         if not replace or (key in styles.keys()):
             continue
         styles[key] = value
     if returnval == "element":
         newstylestext = f'style="{"; ".join([f"{style[0]}:{style[1]}" for style in styles])}"'
-        element, num = re.subn(r'style\s*=\s*"[^"=>\n]+?"', newstylestext, element)
+        element, num = re.subn(r'''style\s*=\s*["'][^"'=>\n]+?["']''', newstylestext, element)
         if num == 0:
-            element += f {newstylestext}"
+            element += f" {newstylestext}"
         return element
     elif returnval == "table":
         return styles
@@ -97,7 +97,7 @@ def pageprocess(text:str, table:dict):
 def main():
     site = pywikibot.Site("wikipedia:zh")
     try:
-        config = json.loads(pywikibot.Page(site, "User:Twelephant-bot/task/5/config.json"))
+        config = json.loads(pywikibot.Page(site, "User:Twelephant-bot/task/5/config.json").text)
         if not config["Enable"]:
             return
         table = config["table"]
