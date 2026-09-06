@@ -61,20 +61,22 @@ def ChangeClass(element, addclasses:set, removeclasses:set, classes:set = None):
         element += f" {newclasstext}"
     return element
 
-def ChangeStyles(element:str = "", addstyles:dict = {}, removestyles:iter = [], styles:dict = None, replace:bool = True, returnval:str= "element"):
+def ChangeStyles(element:str = "", addstyles:dict = None, removestyles:iter = None, styles:dict = None, replace:bool = True, returnval:str= "element"):
     if styles is None:
         stylestext = re.search(r'''styles\s*=\s*["']([^"'=>\n]+?)["']''', element)
         if stylestext is None:
             styles = {}
         else:
             styles = {style[0].strip() : style[1].strip() for style in (style.split(":", 1) for style in stylestext.group(1).split(";"))}
-    for style in removestyles:
-        if style in styles.keys():
-            del styles[style]
-    for key, value in addstyles.items():
-        if not replace or (key in styles.keys()):
-            continue
-        styles[key] = value
+    if removestyles is not None:
+        for style in removestyles:
+            if style in styles.keys():
+                del styles[style]
+    if addstyles is not None:
+        for key, value in addstyles.items():
+            if not replace or (key in styles.keys()):
+                continue
+            styles[key] = value
     if returnval == "element":
         newstylestext = f'style="{"; ".join([f"{key}:{value}" for key, value in styles.items()])}"'
         element, num = re.subn(r'''style\s*=\s*["'][^"'=>\n]+?["']''', newstylestext, element)
