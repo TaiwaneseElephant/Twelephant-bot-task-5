@@ -31,10 +31,10 @@ def save(site, page, func = lambda x:x, summary:str = "", max_retry_times:int = 
     return False
 
 def ClassToStyles(element, table):
-    classtext = re.search(r'''class\s*=\s["']([\w\d- ]+?)["']''', element)
+    classtext = re.search(r'''class\s*=\s*["']([\w\d- ]+?)["']''', element)
     if classtext is None:
         return element
-    stylestext = re.search(r'''style\s*=\s["']([^"'=>\n]+?)["']''', element)
+    stylestext = re.search(r'''style\s*=\s*["']([^"'=>\n]+?)["']''', element)
     if stylestext is None:
         styles = {}
     else:
