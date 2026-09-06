@@ -64,7 +64,7 @@ def ChangeClass(element, addclasses:set = None, removeclasses:set = None, classe
     element, num = re.subn(r''' *class\s*=\s*["'][\w\d\- ]+?["']''', newclasstext, element)
     if num == 0 and len(classes) > 0:
         element += newclasstext
-    return element
+    return element.rstrip()
 
 def ChangeStyles(element:str = "", addstyles:dict = None, removestyles:iter = None, styles:dict = None, replace:bool = True, returnval:str= "element"):
     if styles is None:
@@ -90,7 +90,7 @@ def ChangeStyles(element:str = "", addstyles:dict = None, removestyles:iter = No
         element, num = re.subn(r''' *style\s*=\s*["'][^"'=>\n]+?["']''', newstylestext, element)
         if num == 0 and len(styles) > 0:
             element += newstylestext
-        return element
+        return element.rstrip()
     elif returnval == "table":
         return styles
     else:
