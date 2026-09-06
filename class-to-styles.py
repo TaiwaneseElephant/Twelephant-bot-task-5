@@ -101,7 +101,7 @@ def pageprocess(text:str, table:dict):
     for match in re.finditer(r"<(div|p|span) ([^>\n]+)>", text):
         newcontent = newcontent.replace(match.group(), f"<{match.group(1)} {ClassToStyles(match.group(2).strip(), table)}>")
     for match in re.finditer(r"(?:^|\n)\s*\{\| (.*=.*)", text):
-        newcontent = newcontent.replace(match.group(), f"{| {ClassToStyles(match.group(1).strip(), table)}")
+        newcontent = newcontent.replace(match.group(), f"{| *{ClassToStyles(match.group(1).strip(), table)}")
     return newcontent
 
 def main():
