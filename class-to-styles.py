@@ -56,7 +56,7 @@ def ChangeClass(element, addclasses:set, removeclasses:set, classes:set = None):
     classes = classes - removeclasses
     classes.update(addclasses)
     newclasstext = f'class="{" ".join(classes)}"'
-    element, num = re.subn(r''''class\s*=\s*["'][\w\d\- ]+?["']''', newclasstext, element)
+    element, num = re.subn(r'''class\s*=\s*["'][\w\d\- ]+?["']''', newclasstext, element)
     if num == 0:
         element += f" {newclasstext}"
     return element
