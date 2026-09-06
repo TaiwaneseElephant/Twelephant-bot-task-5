@@ -76,7 +76,7 @@ def ChangeStyles(element:str = "", addstyles:dict = {}, removestyles:iter = [], 
             continue
         styles[key] = value
     if returnval == "element":
-        newstylestext = f'style="{"; ".join([f"{style[0]}:{style[1]}" for style in styles])}"'
+        newstylestext = f'style="{"; ".join([f"{key}:{value}" for key, value in styles.items()])}"'
         element, num = re.subn(r'''style\s*=\s*["'][^"'=>\n]+?["']''', newstylestext, element)
         if num == 0:
             element += f" {newstylestext}"
