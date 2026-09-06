@@ -1,4 +1,4 @@
-import re
+import re, json, pywikibot
 
 def ClassToStyles(element, table):
     classtext = re.search(r'class\s*=\s"([^"=]+?)"', element)
@@ -18,10 +18,10 @@ def ClassToStyles(element, table):
             classes.remove(classname)
     newclasstext = " ".join(classes)
     newstylestext = "; ".join(style)
-    return changeclass(changestyles(element, newstylestext),newclasstext)
+    return ChangeClass(ChangeStyles(element, newstylestext),newclasstext)
 
-def changeclass(element, classtext):
+def ChangeClass(element, classtext):
     return re.sub(r'(?<=class)\s*=\s*"[^"=]+?"', classtext, element)
 
-def changestyles(element, stylestext):
+def ChangeStyles(element, stylestext):
     return re.sub(r'(?<=style)\s*=\s*"[^"=]+?"', stylestext, element)
