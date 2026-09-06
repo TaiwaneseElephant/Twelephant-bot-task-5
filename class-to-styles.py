@@ -61,7 +61,7 @@ def ChangeClass(element, addclasses:set = None, removeclasses:set = None, classe
         newclasstext = f' class="{" ".join(classes)}"'
     else:
         newclasstext = ""
-    element, num = re.subn(r''' +class\s*=\s*["'][\w\d\- ]+?["']''', newclasstext, element)
+    element, num = re.subn(r''' *class\s*=\s*["'][\w\d\- ]+?["']''', newclasstext, element)
     if num == 0 and len(classes) > 0:
         element += newclasstext
     return element
@@ -87,7 +87,7 @@ def ChangeStyles(element:str = "", addstyles:dict = None, removestyles:iter = No
             newstylestext = f' style="{"; ".join([f"{key}:{value}" for key, value in styles.items()])}"'
         else:
             newstylestext = ""
-        element, num = re.subn(r''' +style\s*=\s*["'][^"'=>\n]+?["']''', newstylestext, element)
+        element, num = re.subn(r''' *style\s*=\s*["'][^"'=>\n]+?["']''', newstylestext, element)
         if num == 0 and len(styles) > 0:
             element += newstylestext
         return element
