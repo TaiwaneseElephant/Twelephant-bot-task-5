@@ -43,7 +43,7 @@ def ClassToStyles(element, table):
     targetclasses = set(table.keys())
     for classname in (classes & targetclasses):
         stylestable = table[classname]
-        styles = ChangeStyles(neweelement, addstyles, styles = styles, replace = False, returnval = "table")
+        styles = ChangeStyles(addstyles = stylestable, styles = styles, replace = False, returnval = "table")
     return ChangeClass(ChangeStyles(element, styles, styles = styles, replace = False, returnval = "element"), targetclasses, classes = classes)
 
 def ChangeClass(element, addclasses:set, removeclasses:set, classes:set = None):
@@ -61,7 +61,7 @@ def ChangeClass(element, addclasses:set, removeclasses:set, classes:set = None):
         element += f" {newclasstext}"
     return element
 
-def ChangeStyles(element, addstyles:dict = {}, removestyles:iter = [], styles:dict = None, replace:bool = True, returnval:str= "element"):
+def ChangeStyles(element:str = "", addstyles:dict = {}, removestyles:iter = [], styles:dict = None, replace:bool = True, returnval:str= "element"):
     if styles is None:
         stylestext = re.search(r'styles\s*=\s"([^"'=>\n]+?)"', element)
         if stylestext is None:
