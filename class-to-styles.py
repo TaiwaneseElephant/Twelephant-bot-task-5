@@ -96,12 +96,22 @@ def ChangeStyles(element:str = "", addstyles:dict = None, removestyles:iter = No
     else:
         raise ValueError(f"Unexpected value for 'returnval': {returnval}")
 
-def pageprocess(text:str, table:dict):
-    newcontent = text
-    for match in re.finditer(r"<(div|p|span) ([^>\n]+)>", text):
+def pageprocess(text:str, table:dict, target_tags:str, ignore_tags:str = None):
+    content = text
+    if ignore_tags is not None:
+        content = content.replace("&#x2060;", "")
+        temp = []
+        for match in re.findall(rf"<{ignore_tags}(?: [^>\n]*)?>.+?</{target_tags} *>"):
+            content = content.replace(match, f"&#x2060;{len(temp)}&#x2060;", 1)
+            temp.append(match)
+    newcontent = content
+    for match in re.finditer(rf"<({target_tags}) +([^>\n]+)>", text):
         newcontent = newcontent.replace(match.group(), f"<{match.group(1)} {ClassToStyles(match.group(2).strip(), table)}>", 1)
     for match in re.finditer(r"(?:^|\n)\s*\{\| *(.*=.*)", text):
         newcontent = newcontent.replace(match.group(), f"{| {ClassToStyles(match.group(1).strip(), table)}", 1)
+    if ignore_tags is not None:
+        for i in range(len(temp)):
+            newcontent = newcontent.replace(f"&#x2060;{i}&#x2060;", temp[i], 1)
     return newcontent
 
 def main():
@@ -111,10 +121,12 @@ def main():
         if not config["Enable"]:
             return
         table = config["table"]
+        target_tags = "|".join(config["target tags"])
+        ignore_tags = "|".join(config["ignore tags"])
         query = config["query"]
         summary = config["summary"]
     except:
         print("Failed to load config.")
         return
     for page in pagegenerators.SearchPageGenerator(query, site=site, content=True):
-        save(site, page, pageprocess, summary, table = table)
+        save(site, page, pageprocess, summary, table = table, target_tags = target_tags, ignore_tags = ignore_tags)
