@@ -4,17 +4,17 @@ from pywikibot import textlib, pagegenerators
 def save(site, page, func = lambda x:x, summary:str = "", max_retry_times:int = 3, **kargs) -> bool:
     e = None
     if page.exists():
-        oringinal_text = page.get(force = True, get_redirect = False)
+        original_text = page.get(force = True, get_redirect = False)
     else:
       return False
     for _ in range(max_retry_times):
         try:
-            page.text = func(oringinal_text, **kargs)
+            page.text = func(original_text, **kargs)
             page.save(summary, minor = True, bot=True)
             return True
         except pywikibot.exceptions.EditConflictError as e:
             print(f"Warning! There is an edit conflict on page '{page.title()}'!", flush=True)
-            oringinal_text = page.get(force = True, get_redirect = False)
+            original_text = page.get(force = True, get_redirect = False)
         except pywikibot.exceptions.LockedPageError as e:
             print(f"Warning! The edit attempt on page '{page.title()}' was disallowed because the page is protected!", flush=True)
             break
