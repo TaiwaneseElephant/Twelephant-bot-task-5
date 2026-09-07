@@ -105,13 +105,13 @@ def pageprocess(text:str, table:dict, target_tags:str, ignore_tags:str = None):
     if ignore_tags is not None:
         content = content.replace("&#x2060;", "")
         temp = []
-        for match in re.findall(rf"<({ignore_tags})(?: [^>\n]*)?>.+?</\1 *>"):
+        for match in re.findall(rf"<({ignore_tags})(?: [^>\n]*)?>[\s\S]+?</\1 *>", text, flag=re.IGNORECASE):
             content = content.replace(match, f"&#x2060;{len(temp)}&#x2060;", 1)
             temp.append(match)
     newcontent = content
-    for match in re.finditer(rf"<({target_tags}) +([^>\n]+)>", content):
+    for match in re.finditer(rf"<({target_tags}) +([^>\n]+)>", content, flag=re.IGNORECASE):
         newcontent = newcontent.replace(match.group(), f"<{match.group(1)} {ClassToStyles(match.group(2).strip(), table)}>", 1)
-    for match in re.finditer(r"(^|\n)\s*\{\| *(.*=.*)", content):
+    for match in re.finditer(r"(^|\n)\s*\{\| *(.*=.*)", content, flag=re.IGNORECASE):
         newcontent = newcontent.replace(match.group(), f"{match.group(1)}{{| {ClassToStyles(match.group(2).strip(), table)}", 1)
     if ignore_tags is not None:
         for i in range(len(temp)):
