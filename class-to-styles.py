@@ -10,7 +10,8 @@ def save(site, page, func = lambda x:x, summary:str = "", max_retry_times:int = 
     for _ in range(max_retry_times):
         try:
             page.text = func(original_text, **kargs)
-            page.save(summary, minor = True, bot=True)
+            if page.text != original_text:
+                page.save(summary, minor = True, bot=True)
             return True
         except pywikibot.exceptions.EditConflictError as e:
             print(f"Warning! There is an edit conflict on page '{page.title()}'!", flush=True)
