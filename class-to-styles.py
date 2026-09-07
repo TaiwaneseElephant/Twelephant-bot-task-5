@@ -112,7 +112,7 @@ def pageprocess(text:str, table:dict, target_tags:str, ignore_tags:str = None):
     for match in re.finditer(rf"<({target_tags}) +([^>\n]+)>", content):
         newcontent = newcontent.replace(match.group(), f"<{match.group(1)} {ClassToStyles(match.group(2).strip(), table)}>", 1)
     for match in re.finditer(r"(^|\n)\s*\{\| *(.*=.*)", content):
-        newcontent = newcontent.replace(match.group(), f"{match.group(1)}{| {ClassToStyles(match.group(2).strip(), table)}", 1)
+        newcontent = newcontent.replace(match.group(), f"{match.group(1)}{{| {ClassToStyles(match.group(2).strip(), table)}", 1)
     if ignore_tags is not None:
         for i in range(len(temp)):
             newcontent = newcontent.replace(f"&#x2060;{i}&#x2060;", temp[i], 1)
