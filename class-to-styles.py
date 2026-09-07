@@ -4,7 +4,7 @@ from pywikibot import textlib, pagegenerators
 def save(site, page, func = lambda x:x, summary:str = "", max_retry_times:int = 3, **kargs) -> bool:
     e = None
     if page.exists():
-        original_text = page.get(force = True, get_redirect = False)
+        original_text = page.text
     else:
       return False
     for _ in range(max_retry_times):
