@@ -102,7 +102,7 @@ def pageprocess(text:str, table:dict, target_tags:str, ignore_tags:str = None):
     if ignore_tags is not None:
         content = content.replace("&#x2060;", "")
         temp = []
-        for match in re.findall(rf"<{ignore_tags}(?: [^>\n]*)?>.+?</{target_tags} *>"):
+        for match in re.findall(rf"<({ignore_tags})(?: [^>\n]*)?>.+?</\1 *>"):
             content = content.replace(match, f"&#x2060;{len(temp)}&#x2060;", 1)
             temp.append(match)
     newcontent = content
