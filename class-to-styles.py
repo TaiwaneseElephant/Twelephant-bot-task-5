@@ -32,10 +32,10 @@ def save(site, page, func = lambda x:x, summary:str = "", max_retry_times:int = 
     return False
 
 def ClassToStyles(element, table):
-    classtext = re.search(r'''class\s*=\s*["']([\w\d- ]+?)["']''', element)
+    classtext = re.search(r'''class\s*=\s*["']?([\w\d- ]+?)["']?''', element)
     if classtext is None:
         return element
-    stylestext = re.search(r'''style\s*=\s*["']([^"'=>\n]+?)["']''', element)
+    stylestext = re.search(r'''style\s*=\s*["']?([^"'=>\n]+?)["']?''', element)
     if stylestext is None:
         styles = {}
     else:
@@ -49,7 +49,7 @@ def ClassToStyles(element, table):
 
 def ChangeClass(element, addclasses:set = None, removeclasses:set = None, classes:set = None):
     if classes is None:
-        classtext = re.search(r'''class\s*=\s*["']([\w\d\- ]+?)["']''', element)
+        classtext = re.search(r'''class\s*=\s*["']?([\w\d\- ]+?)["']?''', element)
         if classtext is None:
             classes = set()
         else:
@@ -62,14 +62,14 @@ def ChangeClass(element, addclasses:set = None, removeclasses:set = None, classe
         newclasstext = f' class="{" ".join(classes)}"'
     else:
         newclasstext = ""
-    element, num = re.subn(r''' *class\s*=\s*["'][\w\d\- ]+?["']''', newclasstext, element)
+    element, num = re.subn(r''' *class\s*=\s*["']?[\w\d\- ]+?["']?''', newclasstext, element)
     if num == 0 and len(classes) > 0:
         element += newclasstext
     return element.rstrip()
 
 def ChangeStyles(element:str = "", addstyles:dict = None, removestyles:iter = None, styles:dict = None, replace:bool = True, returnval:str= "element"):
     if styles is None:
-        stylestext = re.search(r'''style\s*=\s*["']([^"'=>\n]+?)["']''', element)
+        stylestext = re.search(r'''style\s*=\s*["']?([^"'=>\n]+?)["']?''', element)
         if stylestext is None:
             styles = {}
         else:
@@ -88,7 +88,7 @@ def ChangeStyles(element:str = "", addstyles:dict = None, removestyles:iter = No
             newstylestext = f' style="{"; ".join([f"{key}:{value}" for key, value in styles.items()])}"'
         else:
             newstylestext = ""
-        element, num = re.subn(r''' *style\s*=\s*["'][^"'=>\n]+?["']''', newstylestext, element)
+        element, num = re.subn(r''' *style\s*=\s*["']?[^"'=>\n]+?["']?''', newstylestext, element)
         if num == 0 and len(styles) > 0:
             element += newstylestext
         return element.rstrip()
@@ -108,8 +108,8 @@ def pageprocess(text:str, table:dict, target_tags:str, ignore_tags:str = None):
     newcontent = content
     for match in re.finditer(rf"<({target_tags}) +([^>\n]+)>", content):
         newcontent = newcontent.replace(match.group(), f"<{match.group(1)} {ClassToStyles(match.group(2).strip(), table)}>", 1)
-    for match in re.finditer(r"(?:^|\n)\s*\{\| *(.*=.*)", content):
-        newcontent = newcontent.replace(match.group(), f"{| {ClassToStyles(match.group(1).strip(), table)}", 1)
+    for match in re.finditer(r"(^|\n)\s*\{\| *(.*=.*)", content):
+        newcontent = newcontent.replace(match.group(), f"{match.group(1)}{| {ClassToStyles(match.group(2).strip(), table)}", 1)
     if ignore_tags is not None:
         for i in range(len(temp)):
             newcontent = newcontent.replace(f"&#x2060;{i}&#x2060;", temp[i], 1)
