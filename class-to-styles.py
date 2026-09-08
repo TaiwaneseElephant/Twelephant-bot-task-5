@@ -1,7 +1,7 @@
 import re, json, pywikibot
 from pywikibot import textlib, pagegenerators
 
-CLASS_PATTERN = re.compile(r'''class\s*=\s*?["']?((?:[\w\d- ](?!\=))+)["' ]''')
+CLASS_PATTERN = re.compile(r'''class\s*=\s*?["']?((?:[\w\d\- ](?!\=))+)["' ]''')
 STYLES_PATTERN = re.compile(r'''style\s*=\s*["']?((?:[^"'=>\n](?!\=))+)["' ]''')
 
 def save(site, page, func = lambda x:x, summary:str = "", max_retry_times:int = 3, **kargs) -> bool:
@@ -65,7 +65,7 @@ def ChangeClass(element, addclasses:set = None, removeclasses:set = None, classe
         newclasstext = f' class="{" ".join(classes)}"'
     else:
         newclasstext = ""
-    element, num = re.subn(r''' *class\s*=\s*["']?((?:[\w\d- ](?!\=))+)["' ]''', newclasstext, element)
+    element, num = re.subn(r''' *class\s*=\s*["']?((?:[\w\d\- ](?!\=))+)["' ]''', newclasstext, element)
     if num == 0 and len(classes) > 0:
         element += newclasstext
     return element.rstrip()
