@@ -140,5 +140,5 @@ def main():
             t += 1
             if t == 50:
                 break
-if __name__ == "__main__:
+if __name__ == "__main__":
     main()
