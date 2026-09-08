@@ -123,6 +123,7 @@ def main():
     try:
         config = json.loads(pywikibot.Page(site, "User:Twelephant-bot/task/5/config.json").text)
         if not config["Enable"]:
+            print("Stop.")
             return
         table = config["table"]
         target_tags = "|".join(config["target tags"])
@@ -134,7 +135,6 @@ def main():
         return
     t = 0
     for page in pagegenerators.SearchPageGenerator(query, site=site, content=True):
-        print(f"Processing page {page.title()}")
         success = save(site, page, pageprocess, summary, table = table, target_tags = target_tags, ignore_tags = ignore_tags)
         if success:
             t += 1
