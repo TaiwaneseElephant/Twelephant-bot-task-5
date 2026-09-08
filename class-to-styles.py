@@ -113,8 +113,8 @@ def pageprocess(text:str, table:dict, target_tags:str, ignore_tags:str = None):
     content = re.sub(r"(^|\n)\s*\{\| *(.*=.*)", lambda match : f"{match.group(1)}{{| {ClassToStyles(match.group(2).strip(), table)}", content, flags=re.IGNORECASE)
     if ignore_tags is not None:
         for i in range(len(temp)):
-            newcontent = newcontent.replace(f"&#x2060;{i}&#x2060;", temp[i], 1)
-    return newcontent
+            content = content.replace(f"&#x2060;{i}&#x2060;", temp[i], 1)
+    return content
 
 def main():
     site = pywikibot.Site("wikipedia:zh")
