@@ -137,12 +137,7 @@ def main():
     except:
         print("Failed to load config.")
         return
-    t = 46
     for page in pagegenerators.SearchPageGenerator(query, site=site, content=True):
-        success = save(site, page, pageprocess, summary, table = table, target_tags = target_tags, ignore_tags = ignore_tags)
-        if success:
-            t += 1
-            if t == 50:
-                break
+        save(site, page, pageprocess, summary, table = table, target_tags = target_tags, ignore_tags = ignore_tags)
 if __name__ == "__main__":
     main()
