@@ -122,6 +122,13 @@ def pageprocess(text:str, table:dict, target_tags:str, ignore_tags:str = None):
             content = content.replace(f"&#x2060;{i + 1}&#x2060;", temp[i], 1)
     return content
 
+def check_switch(site) -> bool:
+    try:
+        switch_page = pwb.Page(site, "User:Twelephant-bot/task/2/config.json")
+        return json.loads(switch_page.text)["Enable"]
+    except:
+        return False
+
 def main():
     site = pywikibot.Site("wikipedia:zh")
     try:
@@ -137,7 +144,12 @@ def main():
     except:
         print("Failed to load config.")
         return
+    t = 0
     for page in pagegenerators.SearchPageGenerator(query, site=site, content=True):
-        save(site, page, pageprocess, summary, table = table, target_tags = target_tags, ignore_tags = ignore_tags)
+        success = save(site, page, pageprocess, summary, table = table, target_tags = target_tags, ignore_tags = ignore_tags)
+        if success:
+            t += 1
+            if t % 10 == 0 and not check_switch(site):
+                break
 if __name__ == "__main__":
     main()
