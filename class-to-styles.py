@@ -95,9 +95,10 @@ def ChangeStyles(element:str = "", addstyles:dict = None, removestyles:iter = No
                     styles[key] = value
             else
                 newstyles[key] = value
+    newstyles.update(styles)
     if returnval == "element":
         if len(styles) > 0:
-            newstylestext = f' style="{"; ".join([f"{key}:{value}" for key, value in newstyles.items()] + [f"{key}:{value}" for key, value in styles.items()])}"'
+            newstylestext = f' style="{"; ".join([f"{key}:{value}" for key, value in newstyles.items()])}"'
         else:
             newstylestext = ""
         element, num = re.subn(r''' *style\s*=\s*["']?((?:[^"'=>\n](?!\=))+)["' ]''', newstylestext, element)
