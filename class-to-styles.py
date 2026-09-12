@@ -45,7 +45,7 @@ def ClassToStyles(element, table):
     if stylestext is None:
         styles = {}
     else:
-        styles = {style[0].strip() : style[1].strip() for style in (style.split(":", 1) for style in stylestext.group(1).split(";") if ":" in style)}
+        styles = {style[0].strip() : style[1].strip() for style in (style.split(":", 1) for style in stylestext.group(1).split(";")  if ":" in style)}
     classes = set(classtext.group(1).split())
     targetclasses = set(table.keys())
     intersection = classes & targetclasses
@@ -87,19 +87,14 @@ def ChangeStyles(element:str = "", addstyles:dict = None, removestyles:iter = No
         for style in removestyles:
             if style in styles.keys():
                 del styles[style]
-    newstyles = {}
     if addstyles is not None:
         for key, value in addstyles.items():
-            if key in styles.keys():
-                if not replace:
-                    continue
-                else:
-                    styles[key] = value
-            else
-                newstyles[key] = value
+            if not replace and (key in styles.keys()):
+                continue
+            styles[key] = value
     if returnval == "element":
         if len(styles) > 0:
-            newstylestext = f' style="{"; ".join([f"{key}:{value}" for key, value in newstyles.items()] + [f"{key}:{value}" for key, value in styles.items()])}"'
+            newstylestext = f' style="{"; ".join([f"{key}:{value}" for key, value in styles.items()])}"'
         else:
             newstylestext = ""
         element, num = re.subn(r''' *style\s*=\s*["']?((?:[^"'=>\n](?!\=))+)["' ]''', newstylestext, element)
