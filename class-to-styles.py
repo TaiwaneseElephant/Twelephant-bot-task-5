@@ -91,9 +91,7 @@ def ChangeStyles(element:str = "", addstyles:dict = None, removestyles:iter = No
     if addstyles is not None:
         for key, value in addstyles.items():
             if key in styles.keys():
-                if not replace:
-                    continue
-                else:
+                if replace:
                     styles[key] = value
             else
                 newstyles[key] = value
