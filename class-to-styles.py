@@ -97,7 +97,7 @@ def ChangeStyles(element:str = "", addstyles:dict = None, removestyles:iter = No
                 newstyles[key] = value
     newstyles.update(styles)
     if returnval == "element":
-        if len(styles) > 0:
+        if len(newstyles) > 0:
             newstylestext = f' style="{"; ".join([f"{key}:{value}" for key, value in newstyles.items()])}"'
         else:
             newstylestext = ""
@@ -106,7 +106,7 @@ def ChangeStyles(element:str = "", addstyles:dict = None, removestyles:iter = No
             element += newstylestext
         return element.rstrip()
     elif returnval == "table":
-        return styles
+        return newstyles
     else:
         raise ValueError(f"Unexpected value for 'returnval': {returnval}")
 
