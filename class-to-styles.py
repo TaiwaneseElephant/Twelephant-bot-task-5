@@ -6,7 +6,7 @@ STYLES_PATTERN = re.compile(r'''style\s*=\s*["']?((?:[^"'=>\n](?!\=))+)["' ]''')
 
 def save(site, page, func = lambda x:x, summary:str = "", max_retry_times:int = 3, **kargs) -> bool:
     e = None
-    if page.exists():
+    if page.exists() and page.botMayEdit():
         original_text = page.text
     else:
       return False
