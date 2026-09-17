@@ -93,7 +93,7 @@ def ChangeStyles(element:str = "", addstyles:dict = None, removestyles:iter = No
             if key in styles.keys():
                 if replace:
                     styles[key] = value
-            else
+            else:
                 newstyles[key] = value
     newstyles.update(styles)
     if returnval == "element":
