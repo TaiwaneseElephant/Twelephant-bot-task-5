@@ -5,7 +5,6 @@ CLASS_PATTERN = re.compile(r'''class\s*=\s*?["']?((?:[\w\d\- ](?!\=))+)["' ]''')
 STYLES_PATTERN = re.compile(r'''style\s*=\s*["']?((?:[^"'=>\n](?!\=))+)["' ]''')
 
 def save(site, page, func = lambda x:x, summary:str = "", max_retry_times:int = 3, **kargs) -> bool:
-    e = ""
     if page.exists() and page.botMayEdit():
         original_text = page.text
     else:
@@ -19,19 +18,19 @@ def save(site, page, func = lambda x:x, summary:str = "", max_retry_times:int = 
             else:
                 print("No difference.")
                 return False
-        except pywikibot.exceptions.EditConflictError as e:
+        except pywikibot.exceptions.EditConflictError:
             print(f"Warning! There is an edit conflict on page '{page.title()}'!", flush=True)
             original_text = page.get(force = True, get_redirect = False)
-        except pywikibot.exceptions.LockedPageError as e:
+        except pywikibot.exceptions.LockedPageError:
             print(f"Warning! The edit attempt on page '{page.title()}' was disallowed because the page is protected!", flush=True)
             break
-        except pywikibot.exceptions.AbuseFilterDisallowedError as e:
+        except pywikibot.exceptions.AbuseFilterDisallowedError:
             print(f"Warning! The edit attempt on page '{page.title()}' was disallowed by the AbuseFilter!", flush=True)
             break
-        except pywikibot.exceptions.SpamblacklistError as e:
+        except pywikibot.exceptions.SpamblacklistError:
             print(f"Warning! The edit attempt on page '{page.title()}' was disallowed by the SpamFilter because the edit add blacklisted URL!", flush=True)
             break
-        except pywikibot.exceptions.TitleblacklistError as e:
+        except pywikibot.exceptions.TitleblacklistError:
             print(f"Warning! The edit attempt on page '{page.title()}' was disallowed because the title is blacklisted!", flush=True)
             break
     print(f"The attempt to edit the page '{page.title()}' was stopped because of the error.", flush=True)
