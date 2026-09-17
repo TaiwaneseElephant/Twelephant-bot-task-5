@@ -5,7 +5,7 @@ CLASS_PATTERN = re.compile(r'''class\s*=\s*?["']?((?:[\w\d\- ](?!\=))+)["' ]''')
 STYLES_PATTERN = re.compile(r'''style\s*=\s*["']?((?:[^"'=>\n](?!\=))+)["' ]''')
 
 def save(site, page, func = lambda x:x, summary:str = "", max_retry_times:int = 3, **kargs) -> bool:
-    e = None
+    e = ""
     if page.exists() and page.botMayEdit():
         original_text = page.text
     else:
@@ -34,7 +34,7 @@ def save(site, page, func = lambda x:x, summary:str = "", max_retry_times:int = 
         except pywikibot.exceptions.TitleblacklistError as e:
             print(f"Warning! The edit attempt on page '{page.title()}' was disallowed because the title is blacklisted!", flush=True)
             break
-    print(f"The attempt to edit the page '{page.title()}' was stopped because of the error below:\n{e}.", flush=True)
+    print(f"The attempt to edit the page '{page.title()}' was stopped because of the error.", flush=True)
     return False
 
 def ClassToStyles(element, table):
