@@ -33,6 +33,9 @@ def save(site, page, func = lambda x:x, summary:str = "", max_retry_times:int = 
         except pywikibot.exceptions.TitleblacklistError:
             print(f"Warning! The edit attempt on page '{page.title()}' was disallowed because the title is blacklisted!", flush=True)
             break
+        except pywikibot.exceptions.OtherPageSaveError as e:
+            print(f"Warning! The edit attempt on page '{page.title()}' was disallowed due to {e}!", flush=True)
+            break
     print(f"The attempt to edit the page '{page.title()}' was stopped because of the error.", flush=True)
     return False
 
