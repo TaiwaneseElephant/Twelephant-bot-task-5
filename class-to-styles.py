@@ -2,7 +2,7 @@ import re, json, pywikibot
 from pywikibot import textlib, pagegenerators
 
 CLASS_PATTERN = re.compile(r'''class\s*=\s*?["']?((?:[\w\d\- ](?!\=))+)["' ]''')
-STYLES_PATTERN = re.compile(r'''style\s*=\s*["']?((?:[^"'=>\n](?!\=))+)["' ]''')
+STYLES_PATTERN = re.compile(r'''style\s*=\s*["']?((?:[^"'=>](?!\=))+)["' ]''')
 
 def save(site, page, func = lambda x:x, summary:str = "", max_retry_times:int = 3, **kargs) -> bool:
     if page.exists() and page.botMayEdit():
