@@ -103,7 +103,7 @@ def ChangeStyles(element:str = "", addstyles:dict = None, removestyles:iter = No
             newstylestext = f' style="{"; ".join([f"{key}:{value}" for key, value in newstyles.items()])}"'
         else:
             newstylestext = ""
-        element, num = re.subn(r''' *style\s*=\s*["']?((?:[^"'=>\n](?!\=))+)["' ]''', newstylestext, element)
+        element, num = re.subn(r''' *style\s*=\s*["']?((?:[^"'=>](?!\=))+)["' ]''', newstylestext, element)
         if num == 0 and len(styles) > 0:
             element += newstylestext
         return element.rstrip()
@@ -121,7 +121,7 @@ def pageprocess(text:str, table:dict, target_tags:str, ignore_tags:str = None):
             temp.append(match.group())
             return f"&#x2060;{len(temp)}&#x2060;"
         content = re.sub(rf"<({ignore_tags})(?: [^>\n]*)?>[\s\S]*?</\1 *>", remove_ignore_tags, content, flags=re.IGNORECASE)
-    content = re.sub(rf"<({target_tags}) +([^>\n]+)>", lambda match : f"<{match.group(1)} {ClassToStyles(match.group(2).strip(), table)}>", content, flags=re.IGNORECASE)
+    content = re.sub(rf"<({target_tags}) +([^>]+)>", lambda match : f"<{match.group(1)} {ClassToStyles(match.group(2).strip(), table)}>", content, flags=re.IGNORECASE)
     content = re.sub(r"((?:^|\n)\s*\{\| *)(.*=.*)", lambda match : f"{match.group(1)}{ClassToStyles(match.group(2).strip(), table)}", content, flags=re.IGNORECASE)
     if ignore_tags is not None:
         for i in range(len(temp)):
